@@ -32,7 +32,10 @@ const jobApplications=[
 const jobCardsContainer = document.querySelector("#job-cards");
 
 
-jobApplications.forEach((application)=>{
+function renderApplications(){
+    jobCardsContainer.innerHTML = "";
+
+    jobApplications.forEach((application)=>{
     const jobCard = document.createElement("div");
     const jobTitle = document.createElement("p");
     const companyName = document.createElement("h2");
@@ -71,9 +74,44 @@ jobApplications.forEach((application)=>{
     jobCard.appendChild(followUpDateElement);
 
     jobCardsContainer.appendChild(jobCard);
+    });
+}
+
+renderApplications();
+
+const applicationForm = document.querySelector("#job-application-form");
+
+applicationForm.addEventListener("submit", (event)=>{
+    event.preventDefault();
+    const companyInput = document.querySelector("#company-name");
+    const jobTitleInput = document.querySelector("#job-title");
+    const locationInput = document.querySelector("#location");
+    const workTypeInput = document.querySelector("#work-type");
+    const dateAppliedInput = document.querySelector("#date-applied");
+    const statusInput = document.querySelector("#status");
+    const followUpDateInput = document.querySelector("#follow-up-date");
+
+    const company = companyInput.value;
+    const jobTitle = jobTitleInput.value;
+    const location = locationInput.value;
+    const workType = workTypeInput.value;
+    const dateApplied = dateAppliedInput.value || null;
+    const status = statusInput.value;
+    const followUpDate = followUpDateInput.value || null;
+
+    const newApplication = {
+        company,
+        jobTitle,
+        location,
+        workType,
+        dateApplied,
+        status,
+        followUpDate
+    }
+    jobApplications.push(newApplication);
+    renderApplications();
+    applicationForm.reset();
 });
-
-
 
 
 

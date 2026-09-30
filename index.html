@@ -3,13 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
     <title>Job Application Tracker</title>
 </head>
 <body>
     <h1>Job Application Tracker</h1>
     <main>
+        <form id="job-application-form">
+            <h2>Add Job Application</h2>
+            <label for="company-name">Company</label>
+            <input type="text" id="company-name" name="company-name" required>
+            <label for="job-title">Job Title</label>
+            <input type="text" id="job-title" name="job-title" required>
+            <label for="location">Location</label>
+            <input type="text" id="location" name="location" required>
+            <label for="work-type">Work Type</label>
+            <select id="work-type" name="work-type" required>
+                <option value="" disabled selected>Select work type</option>
+                <option value="Remote">Remote</option>
+                <option value="Hybrid">Hybrid</option>
+                <option value="On-site">On-site</option>
+            </select>
+            <label for="date-applied">Date Applied</label>
+            <input type="date" name="date-applied" id="date-applied">
+            <label for="status">Status</label>
+            <select name="status" id="status" required>
+                <option value="" disabled selected>Select status</option>
+                <option value="Saved">Saved</option>
+                <option value="Applied">Applied</option>
+                <option value="Interview">Interview</option>
+                <option value="Offer">Offer</option>
+                <option value="Rejected">Rejected</option>
+            </select>
+            <label for="follow-up-date">Follow-Up Date</label>
+            <input type="date" name="follow-up-date" id="follow-up-date">
+            <button type="submit">Add Application</button>
+        </form>
         <section id="job-cards">
-
         </section>
     </main>
 
