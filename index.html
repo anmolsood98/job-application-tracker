@@ -39,6 +39,21 @@
             <input type="date" name="follow-up-date" id="follow-up-date">
             <button type="submit">Add Application</button>
         </form>
+        <section id="search">
+            <label for="job-search">Search Applications</label>
+            <input type="text" id="job-search" name="job-search">
+            <label for="status-search"> By Status</label>
+            <select name="status-search" id="status-search">
+                <option value="all" selected>All Applications</option>
+                <option value="saved">Saved</option>
+                <option value="applied">Applied</option>
+                <option value="interview">Interview</option>
+                <option value="offer">Offer</option>
+                <option value="rejected">Rejected</option>
+
+            </select>
+            <p id="search-message"></p>
+        </section>
         <section id="job-cards">
         </section>
     </main>

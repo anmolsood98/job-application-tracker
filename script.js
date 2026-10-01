@@ -32,10 +32,10 @@ const jobApplications=[
 const jobCardsContainer = document.querySelector("#job-cards");
 
 
-function renderApplications(){
+function renderApplications(applicationArray){
     jobCardsContainer.innerHTML = "";
 
-    jobApplications.forEach((application)=>{
+    applicationArray.forEach((application)=>{
     const jobCard = document.createElement("div");
     const jobTitle = document.createElement("p");
     const companyName = document.createElement("h2");
@@ -77,7 +77,7 @@ function renderApplications(){
     });
 }
 
-renderApplications();
+renderApplications(jobApplications);
 
 const applicationForm = document.querySelector("#job-application-form");
 
@@ -109,11 +109,43 @@ applicationForm.addEventListener("submit", (event)=>{
         followUpDate
     }
     jobApplications.push(newApplication);
-    renderApplications();
+    renderApplications(jobApplications);
     applicationForm.reset();
 });
 
+const searchInput = document.querySelector("#job-search");
+const searchMessage = document.querySelector("#search-message");
+const statusFilter = document.querySelector("#status-search");
 
+function updateDisplayedApplications(){
+    const searchTerm = searchInput.value.toLowerCase();
+    const selectedStatus = statusFilter.value;
 
+    const filteredApplications = jobApplications.filter((application)=>{
+        const matchesSearch = 
+            application.company.toLowerCase().includes(searchTerm) ||
+            application.jobTitle.toLowerCase().includes(searchTerm);
+        
+        const matchesStatus = selectedStatus === "all"|| 
+                              application.status.toLowerCase() === selectedStatus;
+
+        return matchesSearch && matchesStatus;        
+    });
+    renderApplications(filteredApplications);
+
+    if(filteredApplications.length === 0){
+        searchMessage.textContent = "No match found";
+    }else {
+        searchMessage.textContent = "";
+    }
+}
+
+searchInput.addEventListener("input", ()=>{
+    updateDisplayedApplications();
+});
+
+statusFilter.addEventListener("change", ()=>{
+    updateDisplayedApplications();
+});
 
 
