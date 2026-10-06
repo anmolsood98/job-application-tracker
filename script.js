@@ -1,5 +1,6 @@
-const jobApplications=[
+let jobApplications=[
     {
+        applicationId: crypto.randomUUID(),
         company: "Tech Giant",
         jobTitle: "Front-end Developer",
         location: "Toronto",
@@ -9,6 +10,7 @@ const jobApplications=[
         followUpDate: "2026-10-02"
     },
     {
+        applicationId: crypto.randomUUID(),
         company: "Techno.Inc",
         jobTitle: "Junior Developer",
         location: "Mississauga",
@@ -18,6 +20,7 @@ const jobApplications=[
         followUpDate: "2026-10-01"
     },
     {
+        applicationId: crypto.randomUUID(),
         company: "Java",
         jobTitle: "Full Stack Developer",
         location: "Oakville",
@@ -36,44 +39,56 @@ function renderApplications(applicationArray){
     jobCardsContainer.innerHTML = "";
 
     applicationArray.forEach((application)=>{
-    const jobCard = document.createElement("div");
-    const jobTitle = document.createElement("p");
-    const companyName = document.createElement("h2");
-    const locationElement = document.createElement("p");
-    const statusElement = document.createElement("p");
-    const workTypeElement = document.createElement("p");
-    const dateAppliedElement = document.createElement("p");
-    const followUpDateElement = document.createElement("p");
-    
-    jobCard.classList.add("job-card");
+        const jobCard = document.createElement("div");
+        const jobTitle = document.createElement("p");
+        const companyName = document.createElement("h2");
+        const locationElement = document.createElement("p");
+        const statusElement = document.createElement("p");
+        const workTypeElement = document.createElement("p");
+        const dateAppliedElement = document.createElement("p");
+        const followUpDateElement = document.createElement("p");
+        const deleteButton = document.createElement("button");
+        
+        jobCard.classList.add("job-card");
 
-    jobTitle.textContent = application.jobTitle;
-    companyName.textContent = application.company;
-    locationElement.textContent = application.location;
-    statusElement.textContent = `Status: ${application.status}`;
-    workTypeElement.textContent = `Work Type: ${application.workType}`;
+        jobTitle.textContent = application.jobTitle;
+        companyName.textContent = application.company;
+        locationElement.textContent = application.location;
+        statusElement.textContent = `Status: ${application.status}`;
+        workTypeElement.textContent = `Work Type: ${application.workType}`;
+        deleteButton.textContent = "Delete";
 
-    if (application.dateApplied === null){
-        dateAppliedElement.textContent = "Date Applied: Not applied yet";
-    } else{
-        dateAppliedElement.textContent = `Date Applied: ${application.dateApplied}`;
-    }
+        deleteButton.addEventListener("click", ()=>{
+            const remainingApplications = jobApplications.filter((job) =>{
+                return job.applicationId !== application.applicationId;
+            });
+            jobApplications = remainingApplications;
 
-    if(application.followUpDate === null){
-        followUpDateElement.textContent = "Follow-Up Date: No follow-up scheduled";
-    } else{
-        followUpDateElement.textContent = `Follow-Up Date: ${application.followUpDate}`;
-    }
+            updateDisplayedApplications();
+        });
 
-    jobCard.appendChild(companyName);
-    jobCard.appendChild(jobTitle);
-    jobCard.appendChild(locationElement);
-    jobCard.appendChild(workTypeElement);
-    jobCard.appendChild(statusElement);
-    jobCard.appendChild(dateAppliedElement);
-    jobCard.appendChild(followUpDateElement);
+        if (application.dateApplied === null){
+            dateAppliedElement.textContent = "Date Applied: Not applied yet";
+        } else{
+            dateAppliedElement.textContent = `Date Applied: ${application.dateApplied}`;
+        }
 
-    jobCardsContainer.appendChild(jobCard);
+        if(application.followUpDate === null){
+            followUpDateElement.textContent = "Follow-Up Date: No follow-up scheduled";
+        } else{
+            followUpDateElement.textContent = `Follow-Up Date: ${application.followUpDate}`;
+        }
+
+        jobCard.appendChild(companyName);
+        jobCard.appendChild(jobTitle);
+        jobCard.appendChild(locationElement);
+        jobCard.appendChild(workTypeElement);
+        jobCard.appendChild(statusElement);
+        jobCard.appendChild(dateAppliedElement);
+        jobCard.appendChild(followUpDateElement);
+        jobCard.appendChild(deleteButton);
+
+        jobCardsContainer.appendChild(jobCard);
     });
 }
 
@@ -99,7 +114,10 @@ applicationForm.addEventListener("submit", (event)=>{
     const status = statusInput.value;
     const followUpDate = followUpDateInput.value || null;
 
+    const applicationId = crypto.randomUUID();
+
     const newApplication = {
+        applicationId,
         company,
         jobTitle,
         location,
