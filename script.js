@@ -48,6 +48,7 @@ function renderApplications(applicationArray){
         const dateAppliedElement = document.createElement("p");
         const followUpDateElement = document.createElement("p");
         const deleteButton = document.createElement("button");
+        const editButton = document.createElement("button");
         
         jobCard.classList.add("job-card");
 
@@ -57,6 +58,102 @@ function renderApplications(applicationArray){
         statusElement.textContent = `Status: ${application.status}`;
         workTypeElement.textContent = `Work Type: ${application.workType}`;
         deleteButton.textContent = "Delete";
+        editButton.textContent = "Edit";
+
+            let companyEditInput;
+            let jobTitleEditInput;
+            let locationEditInput;
+            let workTypeEditSelect;
+            let statusEditSelect;
+            let dateAppliedEditInput;
+            let followUpEditInput;
+        
+        editButton.addEventListener("click", ()=>{
+
+            if (editButton.textContent === "Edit"){
+                companyEditInput = document.createElement("input");
+                jobTitleEditInput = document.createElement("input");
+                locationEditInput = document.createElement("input");
+                workTypeEditSelect = document.createElement("select");
+                statusEditSelect = document.createElement("select");
+                dateAppliedEditInput = document.createElement("input");
+                followUpEditInput = document.createElement("input");
+            
+                const remoteOption = document.createElement("option");
+                const hybridOption = document.createElement("option");
+                const onSiteOption = document.createElement("option");
+            
+                const savedOption = document.createElement("option");
+                const appliedOption = document.createElement("option");
+                const interviewOption = document.createElement("option");
+                const offerOption = document.createElement("option");
+                const rejectedOption = document.createElement("option");
+            
+
+                dateAppliedEditInput.type = "date";
+                followUpEditInput.type = "date";
+
+                companyEditInput.value = application.company;
+                jobTitleEditInput.value = application.jobTitle;
+                locationEditInput.value = application.location;
+                dateAppliedEditInput.value = application.dateApplied || "";
+                followUpEditInput.value = application.followUpDate || "";
+
+                remoteOption.value = "Remote";
+                remoteOption.textContent = "Remote";
+                hybridOption.value = "Hybrid";
+                hybridOption.textContent = "Hybrid";
+                onSiteOption.value = "On-site";
+                onSiteOption.textContent = "On-site";
+
+                savedOption.value = "Saved";
+                savedOption.textContent = "Saved";
+                appliedOption.value = "Applied";
+                appliedOption.textContent = "Applied";
+                interviewOption.value = "Interview";
+                interviewOption.textContent = "Interview";
+                offerOption.value = "Offer";
+                offerOption.textContent = "Offer";
+                rejectedOption.value = "Rejected";
+                rejectedOption.textContent = "Rejected";
+
+
+                workTypeEditSelect.appendChild(remoteOption);
+                workTypeEditSelect.appendChild(hybridOption);
+                workTypeEditSelect.appendChild(onSiteOption);
+
+                statusEditSelect.appendChild(savedOption);
+                statusEditSelect.appendChild(appliedOption);
+                statusEditSelect.appendChild(interviewOption);
+                statusEditSelect.appendChild(offerOption);
+                statusEditSelect.appendChild(rejectedOption);
+
+
+                workTypeEditSelect.value = application.workType;
+                statusEditSelect.value = application.status;
+
+                jobCard.replaceChild(companyEditInput,companyName);
+                jobCard.replaceChild(jobTitleEditInput, jobTitle);
+                jobCard.replaceChild(locationEditInput, locationElement);
+                jobCard.replaceChild(workTypeEditSelect, workTypeElement);
+                jobCard.replaceChild(statusEditSelect, statusElement);
+                jobCard.replaceChild(dateAppliedEditInput, dateAppliedElement);
+                jobCard.replaceChild(followUpEditInput,followUpDateElement);
+
+                editButton.textContent = "Save";
+            } else {
+                application.company = companyEditInput.value;
+                application.jobTitle = jobTitleEditInput.value;
+                application.location = locationEditInput.value;
+                application.workType = workTypeEditSelect.value;
+                application.status = statusEditSelect.value;
+                application.dateApplied = dateAppliedEditInput.value || null;
+                application.followUpDate = followUpEditInput.value || null;
+
+                updateDisplayedApplications();
+            }
+
+        });
 
         deleteButton.addEventListener("click", ()=>{
             const remainingApplications = jobApplications.filter((job) =>{
@@ -86,6 +183,7 @@ function renderApplications(applicationArray){
         jobCard.appendChild(statusElement);
         jobCard.appendChild(dateAppliedElement);
         jobCard.appendChild(followUpDateElement);
+        jobCard.appendChild(editButton);
         jobCard.appendChild(deleteButton);
 
         jobCardsContainer.appendChild(jobCard);
