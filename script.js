@@ -28,11 +28,47 @@ let jobApplications=[
         dateApplied: null,
         status: "Saved",
         followUpDate: null
+    },
+    {
+        applicationId: crypto.randomUUID(),
+        company: "Apple",
+        jobTitle: "CSR",
+        location: "Ottawa",
+        workType: "Hybrid",
+        dateApplied: "2026-09-25",
+        status: "Offer",
+        followUpDate: "2026-10-15"
+    },
+    {
+        applicationId: crypto.randomUUID(),
+        company: "Microsoft",
+        jobTitle: "Data Mangement",
+        location: "Burlington",
+        workType: "Remote",
+        dateApplied: "2026-10-10",
+        status: "Rejected",
+        followUpDate: null
     }
 
 ];
 
 const jobCardsContainer = document.querySelector("#job-cards");
+
+function createEditField(labelText, inputElement, inputId){
+    const editGroup = document.createElement("div");
+    const editLabel = document.createElement("label");
+    
+    editGroup.classList.add("edit-field");
+    editLabel.textContent = labelText;
+
+    inputElement.id = inputId;
+    editLabel.htmlFor = inputId;
+    
+    editGroup.appendChild(editLabel);
+    editGroup.appendChild(inputElement);
+
+    return editGroup;
+}
 
 
 function renderApplications(applicationArray){
@@ -49,8 +85,12 @@ function renderApplications(applicationArray){
         const followUpDateElement = document.createElement("p");
         const deleteButton = document.createElement("button");
         const editButton = document.createElement("button");
-        
+
+        editButton.classList.add("edit-button");
+        deleteButton.classList.add("delete-button");        
         jobCard.classList.add("job-card");
+        statusElement.classList.add("status-badge");
+        statusElement.classList.add(application.status.toLowerCase());
 
         jobTitle.textContent = application.jobTitle;
         companyName.textContent = application.company;
@@ -71,6 +111,7 @@ function renderApplications(applicationArray){
         editButton.addEventListener("click", ()=>{
 
             if (editButton.textContent === "Edit"){
+                jobCard.classList.add("editing");
                 companyEditInput = document.createElement("input");
                 jobTitleEditInput = document.createElement("input");
                 locationEditInput = document.createElement("input");
@@ -78,7 +119,22 @@ function renderApplications(applicationArray){
                 statusEditSelect = document.createElement("select");
                 dateAppliedEditInput = document.createElement("input");
                 followUpEditInput = document.createElement("input");
-            
+
+                const companyEditGroup = 
+                    createEditField("Company", companyEditInput , `company-${application.applicationId}`);
+                const titleEditGroup = 
+                    createEditField("Job Title", jobTitleEditInput, `job-title-${application.applicationId}`);
+                const locationEditGroup = 
+                    createEditField("Location", locationEditInput, `location-${application.applicationId}`);
+                const workTypeEditGroup = 
+                    createEditField("Work Type", workTypeEditSelect, `work-type-${application.applicationId}`);
+                const statusEditGroup = 
+                    createEditField("Status", statusEditSelect, `status-${application.applicationId}`);
+                const dateAppliedEditGroup = 
+                    createEditField("Date Applied", dateAppliedEditInput, `date-applied-${application.applicationId}`);
+                const followUpDateEditGroup = 
+                    createEditField("Follow-Up Date", followUpEditInput, `follow-up-date-${application.applicationId}`);
+
                 const remoteOption = document.createElement("option");
                 const hybridOption = document.createElement("option");
                 const onSiteOption = document.createElement("option");
@@ -132,13 +188,13 @@ function renderApplications(applicationArray){
                 workTypeEditSelect.value = application.workType;
                 statusEditSelect.value = application.status;
 
-                jobCard.replaceChild(companyEditInput,companyName);
-                jobCard.replaceChild(jobTitleEditInput, jobTitle);
-                jobCard.replaceChild(locationEditInput, locationElement);
-                jobCard.replaceChild(workTypeEditSelect, workTypeElement);
-                jobCard.replaceChild(statusEditSelect, statusElement);
-                jobCard.replaceChild(dateAppliedEditInput, dateAppliedElement);
-                jobCard.replaceChild(followUpEditInput,followUpDateElement);
+                jobCard.replaceChild(companyEditGroup,companyName);
+                jobCard.replaceChild(titleEditGroup, jobTitle);
+                jobCard.replaceChild(locationEditGroup, locationElement);
+                jobCard.replaceChild(workTypeEditGroup, workTypeElement);
+                jobCard.replaceChild(statusEditGroup, statusElement);
+                jobCard.replaceChild(dateAppliedEditGroup, dateAppliedElement);
+                jobCard.replaceChild(followUpDateEditGroup,followUpDateElement);
 
                 editButton.textContent = "Save";
             } else {

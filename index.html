@@ -7,50 +7,68 @@
     <title>Job Application Tracker</title>
 </head>
 <body>
-    <h1>Job Application Tracker</h1>
+    
     <main>
+        <h1>Job Application Tracker</h1>
         <form id="job-application-form">
             <h2>Add Job Application</h2>
-            <label for="company-name">Company</label>
-            <input type="text" id="company-name" name="company-name" required>
-            <label for="job-title">Job Title</label>
-            <input type="text" id="job-title" name="job-title" required>
-            <label for="location">Location</label>
-            <input type="text" id="location" name="location" required>
-            <label for="work-type">Work Type</label>
-            <select id="work-type" name="work-type" required>
-                <option value="" disabled selected>Select work type</option>
-                <option value="Remote">Remote</option>
-                <option value="Hybrid">Hybrid</option>
-                <option value="On-site">On-site</option>
-            </select>
-            <label for="date-applied">Date Applied</label>
-            <input type="date" name="date-applied" id="date-applied">
-            <label for="status">Status</label>
-            <select name="status" id="status" required>
-                <option value="" disabled selected>Select status</option>
-                <option value="Saved">Saved</option>
-                <option value="Applied">Applied</option>
-                <option value="Interview">Interview</option>
-                <option value="Offer">Offer</option>
-                <option value="Rejected">Rejected</option>
-            </select>
-            <label for="follow-up-date">Follow-Up Date</label>
-            <input type="date" name="follow-up-date" id="follow-up-date">
+            <div>
+                <label for="company-name">Company</label>
+                <input type="text" id="company-name" name="company-name" required>
+            </div>
+            <div>
+                <label for="job-title">Job Title</label>
+                <input type="text" id="job-title" name="job-title" required>
+            </div>
+            <div>
+                <label for="location">Location</label>
+                <input type="text" id="location" name="location" required>
+            </div>
+            <div>
+                <label for="work-type">Work Type</label>
+                <select id="work-type" name="work-type" required>
+                    <option value="" disabled selected>Select work type</option>
+                    <option value="Remote">Remote</option>
+                    <option value="Hybrid">Hybrid</option>
+                    <option value="On-site">On-site</option>
+                </select>
+            </div>
+            <div>
+                <label for="date-applied">Date Applied</label>
+                <input type="date" name="date-applied" id="date-applied">
+            </div>
+            <div>
+                <label for="status">Status</label>
+                <select name="status" id="status" required>
+                    <option value="" disabled selected>Select status</option>
+                    <option value="Saved">Saved</option>
+                    <option value="Applied">Applied</option>
+                    <option value="Interview">Interview</option>
+                    <option value="Offer">Offer</option>
+                    <option value="Rejected">Rejected</option>
+                </select>
+            </div>
+            <div>
+                <label for="follow-up-date">Follow-Up Date</label>
+                <input type="date" name="follow-up-date" id="follow-up-date">
+            </div>
             <button type="submit">Add Application</button>
         </form>
         <section id="search">
-            <label for="job-search">Search Applications</label>
-            <input type="text" id="job-search" name="job-search">
-            <label for="status-search"> By Status</label>
-            <select name="status-search" id="status-search">
-                <option value="all" selected>All Applications</option>
-                <option value="saved">Saved</option>
-                <option value="applied">Applied</option>
-                <option value="interview">Interview</option>
-                <option value="offer">Offer</option>
-                <option value="rejected">Rejected</option>
-
+            <div>
+                <label for="job-search">Search Applications</label>
+                <input type="text" id="job-search" name="job-search">
+            </div>
+            <div>
+                <label for="status-search"> By Status</label>
+                <select name="status-search" id="status-search">
+                    <option value="all" selected>All Applications</option>
+                    <option value="saved">Saved</option>
+                    <option value="applied">Applied</option>
+                    <option value="interview">Interview</option>
+                    <option value="offer">Offer</option>
+                    <option value="rejected">Rejected</option>
+            </div>
             </select>
             <p id="search-message"></p>
         </section>
