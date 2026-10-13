@@ -52,6 +52,12 @@ let jobApplications=[
 
 ];
 
+const savedApplications = localStorage.getItem("jobApplications");
+
+if(savedApplications !== null){
+    jobApplications = JSON.parse(savedApplications);
+}
+
 const jobCardsContainer = document.querySelector("#job-cards");
 
 function createEditField(labelText, inputElement, inputId){
@@ -68,6 +74,10 @@ function createEditField(labelText, inputElement, inputId){
     editGroup.appendChild(inputElement);
 
     return editGroup;
+}
+
+function saveApplications(){
+    localStorage.setItem("jobApplications", JSON.stringify(jobApplications));
 }
 
 
@@ -206,6 +216,7 @@ function renderApplications(applicationArray){
                 application.dateApplied = dateAppliedEditInput.value || null;
                 application.followUpDate = followUpEditInput.value || null;
 
+                saveApplications();
                 updateDisplayedApplications();
             }
 
@@ -216,6 +227,7 @@ function renderApplications(applicationArray){
                 return job.applicationId !== application.applicationId;
             });
             jobApplications = remainingApplications;
+            saveApplications();
 
             updateDisplayedApplications();
         });
@@ -244,6 +256,7 @@ function renderApplications(applicationArray){
 
         jobCardsContainer.appendChild(jobCard);
     });
+
 }
 
 renderApplications(jobApplications);
@@ -281,6 +294,7 @@ applicationForm.addEventListener("submit", (event)=>{
         followUpDate
     }
     jobApplications.push(newApplication);
+    saveApplications();
     renderApplications(jobApplications);
     applicationForm.reset();
 });
