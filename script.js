@@ -1,3 +1,7 @@
+// ====================
+// DATA & STORAGE
+// ====================
+
 let jobApplications=[
     {
         applicationId: crypto.randomUUID(),
@@ -42,7 +46,7 @@ let jobApplications=[
     {
         applicationId: crypto.randomUUID(),
         company: "Microsoft",
-        jobTitle: "Data Mangement",
+        jobTitle: "Data Management",
         location: "Burlington",
         workType: "Remote",
         dateApplied: "2026-10-10",
@@ -58,7 +62,25 @@ if(savedApplications !== null){
     jobApplications = JSON.parse(savedApplications);
 }
 
+function saveApplications(){
+    localStorage.setItem("jobApplications", JSON.stringify(jobApplications));
+}
+
+// ====================
+// DOM ELEMENTS
+// ====================
+
 const jobCardsContainer = document.querySelector("#job-cards");
+
+const applicationForm = document.querySelector("#job-application-form");
+
+const searchInput = document.querySelector("#job-search");
+const searchMessage = document.querySelector("#search-message");
+const statusFilter = document.querySelector("#status-search");
+
+// ====================
+// HELPER FUNCTIONS
+// ====================
 
 function createEditField(labelText, inputElement, inputId){
     const editGroup = document.createElement("div");
@@ -76,15 +98,113 @@ function createEditField(labelText, inputElement, inputId){
     return editGroup;
 }
 
-function saveApplications(){
-    localStorage.setItem("jobApplications", JSON.stringify(jobApplications));
+function createOption(optionValue, selectElement){
+    const optionElement = document.createElement("option");
+    optionElement.value = optionValue;
+    optionElement.textContent = optionValue;
+
+    selectElement.appendChild(optionElement);
 }
 
+function enterEditMode (jobCard, application, displayElements){
+    jobCard.classList.add("editing");
+
+    const companyEditInput = document.createElement("input");
+    const jobTitleEditInput = document.createElement("input");
+    const locationEditInput = document.createElement("input");
+
+    const workTypeEditSelect = document.createElement("select");
+    const statusEditSelect = document.createElement("select");
+    const dateAppliedEditInput = document.createElement("input");
+    const followUpEditInput = document.createElement("input");
+    
+    const editInputs ={
+        companyEditInput,
+        jobTitleEditInput,
+        locationEditInput,
+        workTypeEditSelect,
+        statusEditSelect,
+        dateAppliedEditInput,
+        followUpEditInput
+    }
+
+    const companyEditGroup = 
+        createEditField("Company", editInputs.companyEditInput , `company-${application.applicationId}`);
+    const titleEditGroup = 
+        createEditField("Job Title", editInputs.jobTitleEditInput, `job-title-${application.applicationId}`);
+    const locationEditGroup = 
+        createEditField("Location", editInputs.locationEditInput, `location-${application.applicationId}`);
+    const workTypeEditGroup = 
+        createEditField("Work Type", editInputs.workTypeEditSelect, `work-type-${application.applicationId}`);
+    const statusEditGroup = 
+        createEditField("Status", editInputs.statusEditSelect, `status-${application.applicationId}`);
+    const dateAppliedEditGroup = 
+        createEditField("Date Applied", editInputs.dateAppliedEditInput, `date-applied-${application.applicationId}`);
+    const followUpDateEditGroup = 
+        createEditField("Follow-Up Date", editInputs.followUpEditInput, `follow-up-date-${application.applicationId}`);
+
+    createOption("Remote", editInputs.workTypeEditSelect);
+    createOption("Hybrid", editInputs.workTypeEditSelect);
+    createOption("On-site", editInputs.workTypeEditSelect);
+    
+    createOption("Saved", editInputs.statusEditSelect);
+    createOption("Applied", editInputs.statusEditSelect);
+    createOption("Interview", editInputs.statusEditSelect);
+    createOption("Offer", editInputs.statusEditSelect);
+    createOption("Rejected", editInputs.statusEditSelect);
+
+    editInputs.dateAppliedEditInput.type = "date";
+    editInputs.followUpEditInput.type = "date";
+
+    editInputs.companyEditInput.value = application.company;
+    editInputs.jobTitleEditInput.value = application.jobTitle;
+    editInputs.locationEditInput.value = application.location;
+    editInputs.dateAppliedEditInput.value = application.dateApplied || "";
+    editInputs.followUpEditInput.value = application.followUpDate || "";
+
+    editInputs.workTypeEditSelect.value = application.workType;
+    editInputs.statusEditSelect.value = application.status;
+
+    jobCard.replaceChild(companyEditGroup,displayElements.companyName);
+    jobCard.replaceChild(titleEditGroup, displayElements.jobTitle);
+    jobCard.replaceChild(locationEditGroup, displayElements.locationElement);
+    jobCard.replaceChild(workTypeEditGroup, displayElements.workTypeElement);
+    jobCard.replaceChild(statusEditGroup, displayElements.statusElement);
+    jobCard.replaceChild(dateAppliedEditGroup, displayElements.dateAppliedElement);
+    jobCard.replaceChild(followUpDateEditGroup,displayElements.followUpDateElement);
+
+
+    return editInputs;
+
+}
+
+function saveEditedApplication(application, editInputs){
+    application.company = editInputs.companyEditInput.value;
+    application.jobTitle = editInputs.jobTitleEditInput.value;
+    application.location = editInputs.locationEditInput.value;
+    application.workType = editInputs.workTypeEditSelect.value;
+    application.status = editInputs.statusEditSelect.value;
+    application.dateApplied = editInputs.dateAppliedEditInput.value || null;
+    application.followUpDate = editInputs.followUpEditInput.value || null;
+}
+
+function deleteApplication(applicationId){
+    // DATA — remove the selected application
+    const remainingApplications = 
+        jobApplications.filter((job) =>{
+            return job.applicationId !== applicationId;
+    });
+    jobApplications = remainingApplications;
+}
+// ====================
+// APPLICATION RENDERING
+// ====================
 
 function renderApplications(applicationArray){
     jobCardsContainer.innerHTML = "";
 
     applicationArray.forEach((application)=>{
+
         const jobCard = document.createElement("div");
         const jobTitle = document.createElement("p");
         const companyName = document.createElement("h2");
@@ -95,6 +215,18 @@ function renderApplications(applicationArray){
         const followUpDateElement = document.createElement("p");
         const deleteButton = document.createElement("button");
         const editButton = document.createElement("button");
+
+        let editInputs;
+
+        const displayElements = {
+            companyName,
+            jobTitle,
+            locationElement,
+            workTypeElement,
+            statusElement,
+            dateAppliedElement,
+            followUpDateElement
+        }
 
         editButton.classList.add("edit-button");
         deleteButton.classList.add("delete-button");        
@@ -110,112 +242,16 @@ function renderApplications(applicationArray){
         deleteButton.textContent = "Delete";
         editButton.textContent = "Edit";
 
-            let companyEditInput;
-            let jobTitleEditInput;
-            let locationEditInput;
-            let workTypeEditSelect;
-            let statusEditSelect;
-            let dateAppliedEditInput;
-            let followUpEditInput;
         
         editButton.addEventListener("click", ()=>{
 
             if (editButton.textContent === "Edit"){
-                jobCard.classList.add("editing");
-                companyEditInput = document.createElement("input");
-                jobTitleEditInput = document.createElement("input");
-                locationEditInput = document.createElement("input");
-                workTypeEditSelect = document.createElement("select");
-                statusEditSelect = document.createElement("select");
-                dateAppliedEditInput = document.createElement("input");
-                followUpEditInput = document.createElement("input");
 
-                const companyEditGroup = 
-                    createEditField("Company", companyEditInput , `company-${application.applicationId}`);
-                const titleEditGroup = 
-                    createEditField("Job Title", jobTitleEditInput, `job-title-${application.applicationId}`);
-                const locationEditGroup = 
-                    createEditField("Location", locationEditInput, `location-${application.applicationId}`);
-                const workTypeEditGroup = 
-                    createEditField("Work Type", workTypeEditSelect, `work-type-${application.applicationId}`);
-                const statusEditGroup = 
-                    createEditField("Status", statusEditSelect, `status-${application.applicationId}`);
-                const dateAppliedEditGroup = 
-                    createEditField("Date Applied", dateAppliedEditInput, `date-applied-${application.applicationId}`);
-                const followUpDateEditGroup = 
-                    createEditField("Follow-Up Date", followUpEditInput, `follow-up-date-${application.applicationId}`);
-
-                const remoteOption = document.createElement("option");
-                const hybridOption = document.createElement("option");
-                const onSiteOption = document.createElement("option");
-            
-                const savedOption = document.createElement("option");
-                const appliedOption = document.createElement("option");
-                const interviewOption = document.createElement("option");
-                const offerOption = document.createElement("option");
-                const rejectedOption = document.createElement("option");
-            
-
-                dateAppliedEditInput.type = "date";
-                followUpEditInput.type = "date";
-
-                companyEditInput.value = application.company;
-                jobTitleEditInput.value = application.jobTitle;
-                locationEditInput.value = application.location;
-                dateAppliedEditInput.value = application.dateApplied || "";
-                followUpEditInput.value = application.followUpDate || "";
-
-                remoteOption.value = "Remote";
-                remoteOption.textContent = "Remote";
-                hybridOption.value = "Hybrid";
-                hybridOption.textContent = "Hybrid";
-                onSiteOption.value = "On-site";
-                onSiteOption.textContent = "On-site";
-
-                savedOption.value = "Saved";
-                savedOption.textContent = "Saved";
-                appliedOption.value = "Applied";
-                appliedOption.textContent = "Applied";
-                interviewOption.value = "Interview";
-                interviewOption.textContent = "Interview";
-                offerOption.value = "Offer";
-                offerOption.textContent = "Offer";
-                rejectedOption.value = "Rejected";
-                rejectedOption.textContent = "Rejected";
-
-
-                workTypeEditSelect.appendChild(remoteOption);
-                workTypeEditSelect.appendChild(hybridOption);
-                workTypeEditSelect.appendChild(onSiteOption);
-
-                statusEditSelect.appendChild(savedOption);
-                statusEditSelect.appendChild(appliedOption);
-                statusEditSelect.appendChild(interviewOption);
-                statusEditSelect.appendChild(offerOption);
-                statusEditSelect.appendChild(rejectedOption);
-
-
-                workTypeEditSelect.value = application.workType;
-                statusEditSelect.value = application.status;
-
-                jobCard.replaceChild(companyEditGroup,companyName);
-                jobCard.replaceChild(titleEditGroup, jobTitle);
-                jobCard.replaceChild(locationEditGroup, locationElement);
-                jobCard.replaceChild(workTypeEditGroup, workTypeElement);
-                jobCard.replaceChild(statusEditGroup, statusElement);
-                jobCard.replaceChild(dateAppliedEditGroup, dateAppliedElement);
-                jobCard.replaceChild(followUpDateEditGroup,followUpDateElement);
-
+                editInputs = enterEditMode(jobCard,application,displayElements);
                 editButton.textContent = "Save";
-            } else {
-                application.company = companyEditInput.value;
-                application.jobTitle = jobTitleEditInput.value;
-                application.location = locationEditInput.value;
-                application.workType = workTypeEditSelect.value;
-                application.status = statusEditSelect.value;
-                application.dateApplied = dateAppliedEditInput.value || null;
-                application.followUpDate = followUpEditInput.value || null;
 
+            } else {
+                saveEditedApplication(application, editInputs);
                 saveApplications();
                 updateDisplayedApplications();
             }
@@ -223,12 +259,13 @@ function renderApplications(applicationArray){
         });
 
         deleteButton.addEventListener("click", ()=>{
-            const remainingApplications = jobApplications.filter((job) =>{
-                return job.applicationId !== application.applicationId;
-            });
-            jobApplications = remainingApplications;
+            // Function to delete application
+            deleteApplication(application.applicationId);
+
+            // PERSISTENCE — save updated data
             saveApplications();
 
+            // UI — update what the user sees
             updateDisplayedApplications();
         });
 
@@ -259,9 +296,10 @@ function renderApplications(applicationArray){
 
 }
 
-renderApplications(jobApplications);
 
-const applicationForm = document.querySelector("#job-application-form");
+// ====================
+// FORM HANDLING
+// ====================
 
 applicationForm.addEventListener("submit", (event)=>{
     event.preventDefault();
@@ -295,13 +333,13 @@ applicationForm.addEventListener("submit", (event)=>{
     }
     jobApplications.push(newApplication);
     saveApplications();
-    renderApplications(jobApplications);
+    updateDisplayedApplications();
     applicationForm.reset();
 });
 
-const searchInput = document.querySelector("#job-search");
-const searchMessage = document.querySelector("#search-message");
-const statusFilter = document.querySelector("#status-search");
+// ====================
+// SEARCH & FILTERING
+// ====================
 
 function updateDisplayedApplications(){
     const searchTerm = searchInput.value.toLowerCase();
@@ -326,6 +364,10 @@ function updateDisplayedApplications(){
     }
 }
 
+// ====================
+// EVENT LISTENERS
+// ====================
+
 searchInput.addEventListener("input", ()=>{
     updateDisplayedApplications();
 });
@@ -333,5 +375,11 @@ searchInput.addEventListener("input", ()=>{
 statusFilter.addEventListener("change", ()=>{
     updateDisplayedApplications();
 });
+
+// ====================
+// INITIAL RENDER
+// ====================
+
+renderApplications(jobApplications);
 
 
