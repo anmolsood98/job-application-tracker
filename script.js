@@ -71,12 +71,15 @@ function saveApplications(){
 // ====================
 
 const jobCardsContainer = document.querySelector("#job-cards");
-
 const applicationForm = document.querySelector("#job-application-form");
-
 const searchInput = document.querySelector("#job-search");
 const searchMessage = document.querySelector("#search-message");
 const statusFilter = document.querySelector("#status-search");
+const totalApplicationsCount = document.querySelector("#total-applications-count");
+const interviewCount = document.querySelector("#interview-count");
+const offerCount = document.querySelector("#offer-count");
+const rejectedCount = document.querySelector("#rejected-count");
+
 
 // ====================
 // HELPER FUNCTIONS
@@ -196,6 +199,24 @@ function deleteApplication(applicationId){
     });
     jobApplications = remainingApplications;
 }
+
+function updateDashboard(){
+    const totalApplications = jobApplications.length;
+    const numberOfInterviews =  jobApplications.filter ((application)=>{
+        return application.status === "Interview";
+    }).length;
+    const numberOfOffers =  jobApplications.filter ((application)=>{
+        return application.status === "Offer";
+    }).length;
+    const numberOfRejected =  jobApplications.filter ((application)=>{
+        return application.status === "Rejected";
+    }).length;
+
+    totalApplicationsCount.textContent = totalApplications;
+    interviewCount.textContent = numberOfInterviews;
+    offerCount.textContent = numberOfOffers;
+    rejectedCount.textContent = numberOfRejected;
+}
 // ====================
 // APPLICATION RENDERING
 // ====================
@@ -254,6 +275,7 @@ function renderApplications(applicationArray){
                 saveEditedApplication(application, editInputs);
                 saveApplications();
                 updateDisplayedApplications();
+                updateDashboard();
             }
 
         });
@@ -267,6 +289,9 @@ function renderApplications(applicationArray){
 
             // UI — update what the user sees
             updateDisplayedApplications();
+
+            // UI - dashboard cards info update
+            updateDashboard();
         });
 
         if (application.dateApplied === null){
@@ -334,6 +359,7 @@ applicationForm.addEventListener("submit", (event)=>{
     jobApplications.push(newApplication);
     saveApplications();
     updateDisplayedApplications();
+    updateDashboard();
     applicationForm.reset();
 });
 
@@ -379,7 +405,7 @@ statusFilter.addEventListener("change", ()=>{
 // ====================
 // INITIAL RENDER
 // ====================
-
 renderApplications(jobApplications);
+updateDashboard();
 
 
