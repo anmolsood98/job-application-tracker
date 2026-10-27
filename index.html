@@ -94,12 +94,21 @@
                     <option value="interview">Interview</option>
                     <option value="offer">Offer</option>
                     <option value="rejected">Rejected</option>
+                </select>
             </div>
-            </select>
+            <div id="sort-by">
+                <label for="sort-applications">Sort By</label>
+                <select name="sort-applications" id="sort-applications">
+                    <option value="default" selected>Default</option>
+                    <option value="company-a-z">Company A-Z</option>
+                    <option value="company-z-a">Company Z-A</option>
+                    <option value="newest-applied">Newest Applied</option>
+                    <option value="oldest-applied">Oldest Applied</option>
+                </select>
+            </div>
             <p id="search-message"></p>
         </section>
-        <section id="job-cards">
-        </section>
+        <section id="job-cards"></section>
     </main>
 
     <script src="script.js"></script>

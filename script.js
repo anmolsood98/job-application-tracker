@@ -79,6 +79,7 @@ const totalApplicationsCount = document.querySelector("#total-applications-count
 const interviewCount = document.querySelector("#interview-count");
 const offerCount = document.querySelector("#offer-count");
 const rejectedCount = document.querySelector("#rejected-count");
+const sortApplications = document.querySelector("#sort-applications");
 
 
 // ====================
@@ -370,6 +371,7 @@ applicationForm.addEventListener("submit", (event)=>{
 function updateDisplayedApplications(){
     const searchTerm = searchInput.value.toLowerCase();
     const selectedStatus = statusFilter.value;
+    const selectedSort = sortApplications.value;
 
     const filteredApplications = jobApplications.filter((application)=>{
         const matchesSearch = 
@@ -381,7 +383,44 @@ function updateDisplayedApplications(){
 
         return matchesSearch && matchesStatus;        
     });
-    renderApplications(filteredApplications);
+    
+    const sortedApplications = [...filteredApplications];
+
+    if (selectedSort === "company-a-z"){
+        sortedApplications.sort((a,b)=>{
+            return a.company.localeCompare(b.company);
+        });
+    }else if (selectedSort === "company-z-a"){
+        sortedApplications.sort((a,b)=>{
+            return b.company.localeCompare(a.company);
+        });
+    }else if (selectedSort === "newest-applied"){
+        sortedApplications.sort((a,b)=>{
+            if(!a.dateApplied && !b.dateApplied){
+                return 0;
+            }else if(!a.dateApplied){
+                return 1;
+            }else if(!b.dateApplied){
+                return -1;
+            }else{
+                return new Date(b.dateApplied) - new Date(a.dateApplied);
+            }
+        });
+    }else if (selectedSort === "oldest-applied"){
+        sortedApplications.sort((a,b)=>{
+            if(!a.dateApplied && !b.dateApplied){
+                return 0;
+            }else if(!a.dateApplied){
+                return 1;
+            }else if(!b.dateApplied){
+                return -1;
+            }else{
+                return new Date(a.dateApplied) - new Date(b.dateApplied);
+            }
+        });
+    }
+
+    renderApplications(sortedApplications);
 
     if(filteredApplications.length === 0){
         searchMessage.textContent = "No match found";
@@ -399,6 +438,10 @@ searchInput.addEventListener("input", ()=>{
 });
 
 statusFilter.addEventListener("change", ()=>{
+    updateDisplayedApplications();
+});
+
+sortApplications.addEventListener("change", ()=>{
     updateDisplayedApplications();
 });
 
